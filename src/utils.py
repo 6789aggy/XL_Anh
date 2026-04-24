@@ -31,14 +31,15 @@ def get_top_history(limit=6):
     # Sắp xếp theo điểm cao nhất
     return sorted(history, key=lambda x: -x.get('score', 0))[:limit]
 
-def save_score(name, score, correct_shots, total_q):
-    """Lưu kết quả chi tiết: Tên, Điểm, Accuracy (X/Y)"""
+def save_score(name, score, correct_shots, total_q, difficulty="Dễ"):
+    """Lưu kết quả chi tiết kèm theo độ khó chơi"""
     history = load_data("history.json")
     q_count = total_q if total_q > 0 else 1 
     
     history.append({
         "name": name if name.strip() else "Player 1",
         "score": score,
+        "difficulty": difficulty,  # Lưu mức độ chơi
         "accuracy": f"{correct_shots}/{q_count}",
         "date": datetime.now().strftime("%d/%m/%Y %H:%M")
     })
@@ -48,7 +49,7 @@ def save_score(name, score, correct_shots, total_q):
 def open_add_question_ui():
     root = tk.Tk()
     root.title("HỆ THỐNG QUẢN TRỊ GAME")
-    root.geometry("1100x700")
+    root.geometry("1200x700")
     
     tab_control = ttk.Notebook(root)
     tab1 = Frame(tab_control, bg="#f5f6fa")
@@ -76,7 +77,7 @@ def open_add_question_ui():
     tree_q = ttk.Treeview(tab1, columns=("q", "a", "w1", "w2"), show="headings", height=15)
     for c, h in zip(("q", "a", "w1", "w2"), ("CÂU HỎI", "ĐÚNG", "SAI 1", "SAI 2")):
         tree_q.heading(c, text=h)
-        tree_q.column(c, width=150)
+        tree_q.column(c, width=200)
     tree_q.pack(fill=BOTH, expand=True, padx=10, pady=5)
 
     def on_select(event):
@@ -108,12 +109,19 @@ def open_add_question_ui():
     for q in load_data("questions.json"): 
         tree_q.insert("", END, values=(q['question'], q['correct'], q['options'][1], q['options'][2]))
 
-    # TAB 2: LỊCH SỬ
-    tree_h = ttk.Treeview(tab2, columns=("d", "n", "s", "a"), show="headings")
-    for c, h in zip(("d", "n", "s", "a"), ("NGÀY", "TÊN", "ĐIỂM", "CHÍNH XÁC (ĐÚNG/TỔNG)")):
+    # TAB 2: LỊCH SỬ (Thêm cột Độ khó)
+    tree_h = ttk.Treeview(tab2, columns=("d", "n", "diff", "s", "a"), show="headings")
+    for c, h in zip(("d", "n", "diff", "s", "a"), ("NGÀY", "TÊN", "ĐỘ KHÓ", "ĐIỂM", "CHÍNH XÁC")):
         tree_h.heading(c, text=h); tree_h.column(c, anchor=CENTER)
     tree_h.pack(fill=BOTH, expand=True, padx=10, pady=10)
+    
     for h in sorted(load_data("history.json"), key=lambda x: -x.get('score', 0)):
-        tree_h.insert("", END, values=(h.get('date'), h.get('name'), h.get('score'), h.get('accuracy')))
+        tree_h.insert("", END, values=(
+            h.get('date'), 
+            h.get('name'), 
+            h.get('difficulty', 'Dễ'), # Mặc định là Dễ nếu dữ liệu cũ không có
+            h.get('score', 0), 
+            h.get('accuracy')
+        ))
 
     root.mainloop()
