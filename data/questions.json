@@ -1,0 +1,56 @@
+[
+    {
+        "question": "4+5=",
+        "correct": "9",
+        "options": [
+            "9",
+            "2",
+            "5"
+        ]
+    },
+    {
+        "question": "4+3=",
+        "correct": "7",
+        "options": [
+            "7",
+            "3",
+            "2"
+        ]
+    },
+    {
+        "question": "5x5=",
+        "correct": "25",
+        "options": [
+            "25",
+            "10",
+            "20"
+        ]
+    },
+    {
+        "question": "21x23=",
+        "correct": "483",
+        "options": [
+            "483",
+            "481",
+            "444"
+        ]
+    },
+    {
+        "question": "4x8=",
+        "correct": "32",
+        "options": [
+            "32",
+            "35",
+            "34"
+        ]
+    },
+    {
+        "question": "5x8=",
+        "correct": "40",
+        "options": [
+            "40",
+            "30",
+            "12"
+        ]
+    }
+]
